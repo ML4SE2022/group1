@@ -2,7 +2,7 @@ import torch
 from unixcoder import UniXcoder
 
 from tree_sitter import Language, Parser, Tree
-from simAST_test import main_simp
+from simAST_test import main_simp, traverse_tree
 
 Language.build_library(
   # Store the library in the `build` directory
@@ -11,7 +11,7 @@ Language.build_library(
   # Include one or more languages
   # Add your own path
   [
-    'C:\\Users\\Irene Park\\Desktop\\tree-sitter-cpp',
+    'D:\\tree-sitter-cpp',
   ]
 )
 
@@ -24,9 +24,9 @@ parser.set_language(cpp_lang)
 tree = parser.parse(bytes("""
 int add(int a, int b)
 {
-  int result;
-  result = a+b;
-  return result;                  // return statement
+    int result;
+    result = a + b;
+    return result;
 }
 """, "utf8"))
 # print(tree.root_node.sexp())
@@ -48,6 +48,17 @@ int add(int a, int b)
 # print(tree.root_node.children[0].children[1].children[1].children[1].children[1].type)
 # print(tree.root_node.children[0].children[1].children[1].children[1].children[1].text)
 # print(tree.root_node.children[0].children[1].children[1].children[1].children[1].children)
-print(tree.root_node.sexp())
-main_simp(tree)
-print(tree.root_node.sexp())
+#print(tree.root_node.sexp())
+i = 0
+for node in traverse_tree(tree.root_node):
+    i += 1
+    print(i, node.type)
+
+print("new\n")
+R = main_simp(tree)
+
+#print(R.sexp())
+j = 0
+for node in traverse_tree(R):
+    j += 1
+    print(j, node.type)

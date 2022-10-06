@@ -20,33 +20,27 @@ statements = ["attributed_statement", "break_statement", "case_statement", "co_r
 
 
 FS = []
-def main_simp(attree: Tree):
+def main_simp(attree: Tree, code: str):
     nodes = []
-    code_frag = []
     for node in traverse_tree(attree):
         nodes.append(node)
 
     for node in nodes:
-        if node.type in declarations or node.type in statements:
+        if node.type in declarators or node.type in statements:
             FS.append(node)
-    simplify_AST(attree.root_node, code_frag, FS)
 
-def simplify_AST(root_node: Tree.root_node, code_frag: List[Node], FS: List[Node]):
-    children = []
+    return simplify_AST(attree.root_node, code, FS)
+
+def simplify_AST(root_node: Node, code: str, FS: List[Node]):
     for n in root_node.children:
-        if n.type == "primitive_type" or n.type == "identifier" or n in FS:
-            children.append(n)
-        else:
-            # TODO: Should we get the first child? or All children?
-            children.append(n.children)
-        simplify_AST(n, code_frag, FS)
+        if n in FS or n.text in code:
+            #process node in mapping
+            #else continue to a next level
+        simplify_AST(n, code, FS)
 
-    for i in range(len(children)):
-        root_node.children[i] = children[i]
+    return root_node
 
-    if len(root_node.children) > len(children):
-        for j in range(len(children), len(root_node.children)):
-            root_node.children.remove(j)
+
 
 
 # https://github.com/tree-sitter/py-tree-sitter/issues/33#issuecomment-689426763
