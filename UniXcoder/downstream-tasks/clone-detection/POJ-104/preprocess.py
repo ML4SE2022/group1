@@ -111,4 +111,4 @@ code = bytes("""
       return result;                  // return statement
     }
     """, "utf8")
-print(Preprocess.preprocess(code, Mode.FULL))
+print(Preprocess.preprocess(code, Mode.SIMPLIFIED))
