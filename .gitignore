@@ -131,3 +131,4 @@ dmypy.json
 /.vs
 .idea/
 group1.iml
+/UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset

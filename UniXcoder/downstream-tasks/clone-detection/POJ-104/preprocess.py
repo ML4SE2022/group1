@@ -12,7 +12,7 @@ class Mode(Enum):
 
 class Preprocess:
   # Traverse the tree, taken from https://github.com/tree-sitter/py-tree-sitter/issues/33#issuecomment-689426763
-  def traverse_tree(tree: Tree):
+  def traverse_tree(self, tree: Tree):
     cursor = tree.walk()
 
     reached_root = False
@@ -35,7 +35,7 @@ class Preprocess:
           retracing = False
 
   # Create the one to one mapping from the UniXcoder paper
-  def one_to_one(root_node: Tree, code: str, FS: List[Node]):
+  def one_to_one(self, root_node: Tree, code: str, FS: List[Node]):
       sequence = ""
       name = root_node.type
 
@@ -47,16 +47,15 @@ class Preprocess:
           else:
               sequence += name + "::left"
               for node in root_node.children:
-                  sequence += Preprocess.one_to_one(node, code, FS)
+                  sequence += self.one_to_one(node, code, FS)
               sequence += name + "::right"
           return sequence
       else:
           for node in root_node.children:
-              sequence += Preprocess.one_to_one(node, code, FS)
+              sequence += self.one_to_one(node, code, FS)
       return sequence
 
-  def preprocess(code: bytearray, mode: Mode = Mode.SIMPLIFIED):
-      
+  def preprocess(self, code: str, mode: Mode = Mode.SIMPLIFIED):
     declarators = ["array_declarator", "attributed_declarator", "destructor_name", "function_declarator", "identifier",
                   "operator_name", "parenthesized_declarator", "pointer_declarator", "qualified_identifier", "reference_declarator",
                   "structured_binding_declarator", "template_function"]
@@ -73,42 +72,41 @@ class Preprocess:
     Language.build_library(
       'build/my-languages.so',
       [
-        '.\\TreeSitter\\tree-sitter-cpp',
+        '..\\..\\..\\..\\TreeSitter\\tree-sitter-cpp',
       ]
     )
-
     # Add the cpp language to the parser
     cpp_lang = Language('build/my-languages.so', 'cpp')
     parser = Parser()
     parser.set_language(cpp_lang)
         
-    root_node = parser.parse(code).root_node
-    code_string = code.decode("utf-8")
+    root_node = parser.parse(bytes(str(code), "utf8")).root_node
+    code_string = code #.decode("utf-8")
     nodes = []
     
     if mode == Mode.SIMPLIFIED:
       FS = []
-      for node in Preprocess.traverse_tree(root_node):
+      for node in self.traverse_tree(root_node):
           nodes.append(node)
 
       for node in nodes:
           if node.type in declarators or node.type in statements:
               FS.append(node)
       
-      return Preprocess.one_to_one(root_node, code_string, FS)
+      return self.one_to_one(root_node, code, FS)
     
     elif mode == Mode.FULL:
-      return Preprocess.one_to_one(root_node, code_string, Preprocess.traverse_tree(root_node))
+      return self.one_to_one(root_node, code, self.traverse_tree(root_node))
     else:
       pass
 
 
-code = bytes("""
-    int add(int a, int b)
-    {
-      int result;
-      result = a+b;
-      return result;                  // return statement
-    }
-    """, "utf8")
-print(Preprocess.preprocess(code, Mode.SIMPLIFIED))
+#code = """
+#    int add(int a, int b)
+#    {
+#      int result;
+#      result = a+b;
+#      return result;                  // return statement
+#    }
+#    """
+#print(Preprocess().preprocess(code, Mode.SIMPLIFIED))

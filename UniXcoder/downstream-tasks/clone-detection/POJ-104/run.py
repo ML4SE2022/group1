@@ -33,7 +33,9 @@ import json
 import torch
 import numpy as np
 
-from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset
+from preprocess import Preprocess, Mode
+
+from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset, Subset
 from torch.utils.data.distributed import DistributedSampler
 
 from model import Model
@@ -61,12 +63,12 @@ class InputFeatures(object):
 def convert_examples_to_features(js,tokenizer,args):
     """convert examples to token ids"""
     code = ' '.join(js['code'].split())
-    code_tokens = tokenizer.tokenize(code)[:args.block_size-4]
+    code_tokens = tokenizer.tokenize(Preprocess().preprocess(code, Mode.SIMPLIFIED))[:args.block_size-4]
     source_tokens = [tokenizer.cls_token,"<encoder_only>",tokenizer.sep_token] + code_tokens + [tokenizer.sep_token]
     source_ids = tokenizer.convert_tokens_to_ids(source_tokens)
     padding_length = args.block_size - len(source_ids)
     source_ids += [tokenizer.pad_token_id]*padding_length
-    return InputFeatures(source_tokens,source_ids,js['index'],int(js['label']))
+    return InputFeatures(source_tokens,source_ids,js['index'],(js['label']))
 
 class TextDataset(Dataset):
     def __init__(self, tokenizer, args, file_path=None):
@@ -122,8 +124,11 @@ def set_seed(seed=42):
 
 def train(args, train_dataset, model, tokenizer):
     """ Train the model """
-    train_sampler = RandomSampler(train_dataset)
-    train_dataloader = DataLoader(train_dataset, sampler=train_sampler, 
+
+    indices = torch.arange(100)
+    training_subset = Subset(train_dataset, indices)
+    train_sampler = RandomSampler(training_subset)
+    train_dataloader = DataLoader(training_subset, sampler=train_sampler, 
                                   batch_size=args.train_batch_size,num_workers=4,pin_memory=True)
     
     args.max_steps = args.num_train_epochs*len( train_dataloader)
@@ -141,7 +146,7 @@ def train(args, train_dataset, model, tokenizer):
 
     # Train!
     logger.info("***** Running training *****")
-    logger.info("  Num examples = %d", len(train_dataset))
+    logger.info("  Num examples = %d", len(training_subset))
     logger.info("  Num Epochs = %d", args.num_train_epochs)
     logger.info("  Instantaneous batch size per GPU = %d", args.train_batch_size // args.n_gpu )
     logger.info("  Total train batch size = %d", args.train_batch_size)
