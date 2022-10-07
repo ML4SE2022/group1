@@ -3,7 +3,9 @@ from unixcoder import UniXcoder
 
 from tree_sitter import Language, Parser, Tree
 from simAST_test import main_simp
+import os
 
+dirname = os.path.dirname(__file__)
 Language.build_library(
   # Store the library in the `build` directory
   'build/my-languages.so',
@@ -11,7 +13,7 @@ Language.build_library(
   # Include one or more languages
   # Add your own path
   [
-    'C:\\Users\\Irene Park\\Desktop\\tree-sitter-cpp',
+    os.path.join(dirname, '..\\tree-sitter-cpp'),
   ]
 )
 
