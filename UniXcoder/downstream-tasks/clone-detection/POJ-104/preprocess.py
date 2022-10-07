@@ -1,8 +1,10 @@
 import torch
 import sys
 import os
-sys.path.append(r'../../../../UniXcoder')
-from unixcoder import UniXcoder
+#sys.path.append(r'../../../../UniXcoder')
+#from unixcoder import UniXcoder
+
+import tree_sitter
 
 from tree_sitter import Language, Parser
 
@@ -13,7 +15,7 @@ Language.build_library(
   # Include one or more languages
   # Add your own path
   [
-    'D:\\tree-sitter-cpp',
+    'C:\\tree-sitter-cpp',
   ]
 )
 
@@ -23,14 +25,18 @@ parser = Parser()
 parser.set_language(cpp_lang)
 
 # https://github.com/tree-sitter/tree-sitter-cpp/blob/master/test/corpus/types.txt
-tree = parser.parse(bytes("""
-int add(int a, int b)
-{
-  int result;
-  result = a+b;
-  return result;                  // return statement
-}
-""", "utf8"))
+code = bytes("""
+    int add(int a, int b)
+    {
+      int result;
+      result = a+b;
+      return result;                  // return statement
+    }
+    """, "utf8")
+
+tree = parser.parse(code)
+    
+    
 print(tree.root_node.type)
 print(tree.root_node.children[0].type)
 print(tree.root_node.children[0].children[0].type)
@@ -57,13 +63,20 @@ def one_to_one(root_node: Tree, code: str, FS: List[Node]):
     name = root_node.text
 
     # Check here for node?
-
-    # Is Leaf
-    if root_node.child_count == 0:
-        sequence += name
+    if root_node in FS or n.type in code:
+        # Is Leaf
+        if root_node.child_count == 0:
+            sequence += name
+        else:
+            sequence += name + "::left"
+            for node in root_node.children:
+                sequence += one_to_one(node, code, FS)
+            sequence += name + "::right"
+        return sequence
     else:
-        sequence += name + "::left"
         for node in root_node.children:
             sequence += one_to_one(node, code, FS)
-        sequence += name + "::right"
+
     return sequence
+
+print(preprocess(tree.root_node, code))
