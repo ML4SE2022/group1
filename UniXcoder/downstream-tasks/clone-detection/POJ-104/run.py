@@ -102,13 +102,23 @@ class TextDataset(Dataset):
         index = self.examples[i].index
         labels = list(self.label_examples)
         labels.remove(label)
-        while True:
+        #TODO fix this broken piece of code
+        
+        x=0
+        while x < 50:
             shuffle_example = random.sample(self.label_examples[label],1)[0]
             if shuffle_example.index != index:
                 p_example = shuffle_example
                 break
+            x += 1
+            if x == 50:
+                p_example = shuffle_example
+                break
         n_example = random.sample(self.label_examples[random.sample(labels,1)[0]],1)[0]
         
+        # error:  torch.tensor(n_example.input_ids),torch.tensor(label))
+        #   TypeError: new(): invalid data type 'str'
+
         return (torch.tensor(self.examples[i].input_ids),torch.tensor(p_example.input_ids),
                 torch.tensor(n_example.input_ids),torch.tensor(label))
             
@@ -129,13 +139,8 @@ def train(args, train_dataset, model, tokenizer):
     training_subset = Subset(train_dataset, indices)
     train_sampler = RandomSampler(training_subset)
     train_dataloader = DataLoader(training_subset, sampler=train_sampler, 
-                                  batch_size=args.train_batch_size,num_workers=0,pin_memory=False,shuffle=False) #,num_workers=4
-
-    print("testing stuck?")
-    for step, batch in enumerate(train_dataloader):
-        print(step)
-    
-    args.max_steps = args.num_train_epochs*len(train_dataloader)
+                                  batch_size=args.train_batch_size,num_workers=4,pin_memory=True)
+    args.max_steps = args.num_train_epochs*len( train_dataloader)
 
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
