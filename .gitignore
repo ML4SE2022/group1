@@ -127,7 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
+./UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset
+/.vs
 .idea/
-
 group1.iml
+/UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset

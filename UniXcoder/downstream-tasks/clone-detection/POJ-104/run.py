@@ -33,7 +33,9 @@ import json
 import torch
 import numpy as np
 
-from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset
+from preprocess import Preprocess, Mode
+
+from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset, Subset
 from torch.utils.data.distributed import DistributedSampler
 
 from model import Model
@@ -61,12 +63,12 @@ class InputFeatures(object):
 def convert_examples_to_features(js,tokenizer,args):
     """convert examples to token ids"""
     code = ' '.join(js['code'].split())
-    code_tokens = tokenizer.tokenize(code)[:args.block_size-4]
+    code_tokens = tokenizer.tokenize(Preprocess().preprocess(code, Mode.SIMPLIFIED))[:args.block_size-4]
     source_tokens = [tokenizer.cls_token,"<encoder_only>",tokenizer.sep_token] + code_tokens + [tokenizer.sep_token]
     source_ids = tokenizer.convert_tokens_to_ids(source_tokens)
     padding_length = args.block_size - len(source_ids)
     source_ids += [tokenizer.pad_token_id]*padding_length
-    return InputFeatures(source_tokens,source_ids,js['index'],int(js['label']))
+    return InputFeatures(source_tokens,source_ids,js['index'],(js['label']))
 
 class TextDataset(Dataset):
     def __init__(self, tokenizer, args, file_path=None):
@@ -100,13 +102,23 @@ class TextDataset(Dataset):
         index = self.examples[i].index
         labels = list(self.label_examples)
         labels.remove(label)
-        while True:
+        #TODO fix this broken piece of code
+        
+        x=0
+        while x < 50:
             shuffle_example = random.sample(self.label_examples[label],1)[0]
             if shuffle_example.index != index:
                 p_example = shuffle_example
                 break
+            x += 1
+            if x == 50:
+                p_example = shuffle_example
+                break
         n_example = random.sample(self.label_examples[random.sample(labels,1)[0]],1)[0]
         
+        # error:  torch.tensor(n_example.input_ids),torch.tensor(label))
+        #   TypeError: new(): invalid data type 'str'
+
         return (torch.tensor(self.examples[i].input_ids),torch.tensor(p_example.input_ids),
                 torch.tensor(n_example.input_ids),torch.tensor(label))
             
@@ -122,10 +134,12 @@ def set_seed(seed=42):
 
 def train(args, train_dataset, model, tokenizer):
     """ Train the model """
-    train_sampler = RandomSampler(train_dataset)
-    train_dataloader = DataLoader(train_dataset, sampler=train_sampler, 
+    print(type(train_dataset))
+    indices = torch.arange(100)
+    training_subset = Subset(train_dataset, indices)
+    train_sampler = RandomSampler(training_subset)
+    train_dataloader = DataLoader(training_subset, sampler=train_sampler, 
                                   batch_size=args.train_batch_size,num_workers=4,pin_memory=True)
-    
     args.max_steps = args.num_train_epochs*len( train_dataloader)
 
     # Prepare optimizer and schedule (linear warmup and decay)
@@ -141,7 +155,7 @@ def train(args, train_dataset, model, tokenizer):
 
     # Train!
     logger.info("***** Running training *****")
-    logger.info("  Num examples = %d", len(train_dataset))
+    logger.info("  Num examples = %d", len(training_subset))
     logger.info("  Num Epochs = %d", args.num_train_epochs)
     logger.info("  Instantaneous batch size per GPU = %d", args.train_batch_size // args.n_gpu )
     logger.info("  Total train batch size = %d", args.train_batch_size)
@@ -159,6 +173,8 @@ def train(args, train_dataset, model, tokenizer):
             model.train()
             loss,vec = model(inputs,p_inputs,n_inputs,labels)
 
+            logger.info("we are in batch: ", batch, " with step ", step)
+
             if args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
                 
@@ -168,6 +184,7 @@ def train(args, train_dataset, model, tokenizer):
 
             losses.append(loss.item())
 
+            
             if (step+1)% 100==0:
                 logger.info("epoch {} step {} loss {}".format(idx,step+1,round(np.mean(losses[-100:]),4)))
 

@@ -32,7 +32,7 @@ import shutil
 import json
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset
+from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset, Subset
 from torch.utils.data.distributed import DistributedSampler
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
                           RobertaConfig, RobertaForSequenceClassification, RobertaTokenizer)
@@ -40,15 +40,18 @@ from tqdm import tqdm, trange
 import multiprocessing
 from model import Model
 
+from preprocess import Preprocess, Mode
+
 cpu_cont = 16
 logger = logging.getLogger(__name__)
 
-from parser import DFG_python,DFG_java,DFG_ruby,DFG_go,DFG_php,DFG_javascript
-from parser import (remove_comments_and_docstrings,
+from parserX import DFG_python,DFG_java,DFG_ruby,DFG_go,DFG_php,DFG_javascript
+from parserX import (remove_comments_and_docstrings,
                    tree_to_token_index,
                    index_to_code_token,
                    tree_to_variable_index)
 from tree_sitter import Language, Parser
+
 dfg_function={
     'python':DFG_python,
     'java':DFG_java,
@@ -61,7 +64,7 @@ dfg_function={
 #load parsers
 parsers={}        
 for lang in dfg_function:
-    LANGUAGE = Language('parser/my-languages.so', lang)
+    LANGUAGE = Language('parserX/my-languages.so', lang)
     parser = Parser()
     parser.set_language(LANGUAGE) 
     parser = [parser,dfg_function[lang]]    
@@ -155,7 +158,7 @@ def convert_examples_to_features(item):
             func=url_to_code[url]
             
             #extract data flow
-            code_tokens,dfg=extract_dataflow(func,parser,'java')
+            code_tokens,dfg=extract_dataflow(Preprocess().preprocess(func, Mode.SIMPLIFIED),parser,'java')
             code_tokens=[tokenizer.tokenize('@ '+x)[1:] if idx!=0 else tokenizer.tokenize(x) for idx,x in enumerate(code_tokens)]
             ori2cur_pos={}
             ori2cur_pos[-1]=(0,0)
@@ -322,8 +325,11 @@ def train(args, train_dataset, model, tokenizer):
     """ Train the model """
     
     #build dataloader
-    train_sampler = RandomSampler(train_dataset)
-    train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.train_batch_size,num_workers=4)
+    indices = torch.arange(10000)
+    training_subset = Subset(train_dataset, indices)
+
+    train_sampler = RandomSampler(training_subset)
+    train_dataloader = DataLoader(training_subset, sampler=train_sampler, batch_size=args.train_batch_size,num_workers=4)
     
     args.max_steps=args.epochs*len( train_dataloader)
     args.save_steps=len( train_dataloader)//10
@@ -347,7 +353,7 @@ def train(args, train_dataset, model, tokenizer):
 
     # Train!
     logger.info("***** Running training *****")
-    logger.info("  Num examples = %d", len(train_dataset))
+    logger.info("  Num examples = %d", len(training_subset))
     logger.info("  Num Epochs = %d", args.epochs)
     logger.info("  Instantaneous batch size per GPU = %d", args.train_batch_size//max(args.n_gpu, 1))
     logger.info("  Total train batch size = %d",args.train_batch_size*args.gradient_accumulation_steps)
@@ -419,8 +425,12 @@ def train(args, train_dataset, model, tokenizer):
 def evaluate(args, model, tokenizer, eval_when_training=False):
     #build dataloader
     eval_dataset = TextDataset(tokenizer, args, file_path=args.eval_data_file)
-    eval_sampler = SequentialSampler(eval_dataset)
-    eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler,batch_size=args.eval_batch_size,num_workers=4)
+
+    indices = torch.arange(5000)
+    eval_subset = Subset(eval_dataset, indices)
+
+    eval_sampler = SequentialSampler(eval_subset)
+    eval_dataloader = DataLoader(eval_subset, sampler=eval_sampler,batch_size=args.eval_batch_size,num_workers=4)
 
     # multi-gpu evaluate
     if args.n_gpu > 1 and eval_when_training is False:
@@ -428,7 +438,7 @@ def evaluate(args, model, tokenizer, eval_when_training=False):
 
     # Eval!
     logger.info("***** Running evaluation *****")
-    logger.info("  Num examples = %d", len(eval_dataset))
+    logger.info("  Num examples = %d", len(eval_subset))
     logger.info("  Batch size = %d", args.eval_batch_size)
     
     eval_loss = 0.0
