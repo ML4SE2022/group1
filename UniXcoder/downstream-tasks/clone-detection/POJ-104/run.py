@@ -124,14 +124,18 @@ def set_seed(seed=42):
 
 def train(args, train_dataset, model, tokenizer):
     """ Train the model """
-
+    print(type(train_dataset))
     indices = torch.arange(100)
     training_subset = Subset(train_dataset, indices)
     train_sampler = RandomSampler(training_subset)
     train_dataloader = DataLoader(training_subset, sampler=train_sampler, 
-                                  batch_size=args.train_batch_size,num_workers=4,pin_memory=True)
+                                  batch_size=args.train_batch_size,num_workers=0,pin_memory=False,shuffle=False) #,num_workers=4
+
+    print("testing stuck?")
+    for step, batch in enumerate(train_dataloader):
+        print(step)
     
-    args.max_steps = args.num_train_epochs*len( train_dataloader)
+    args.max_steps = args.num_train_epochs*len(train_dataloader)
 
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
@@ -164,6 +168,8 @@ def train(args, train_dataset, model, tokenizer):
             model.train()
             loss,vec = model(inputs,p_inputs,n_inputs,labels)
 
+            logger.info("we are in batch: ", batch, " with step ", step)
+
             if args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
                 
@@ -173,6 +179,7 @@ def train(args, train_dataset, model, tokenizer):
 
             losses.append(loss.item())
 
+            
             if (step+1)% 100==0:
                 logger.info("epoch {} step {} loss {}".format(idx,step+1,round(np.mean(losses[-100:]),4)))
 

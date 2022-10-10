@@ -43,8 +43,8 @@ from model import Model
 cpu_cont = 16
 logger = logging.getLogger(__name__)
 
-from parser import DFG_python,DFG_java,DFG_ruby,DFG_go,DFG_php,DFG_javascript
-from parser import (remove_comments_and_docstrings,
+from parserX import DFG_python,DFG_java,DFG_ruby,DFG_go,DFG_php,DFG_javascript
+from parserX import (remove_comments_and_docstrings,
                    tree_to_token_index,
                    index_to_code_token,
                    tree_to_variable_index)
@@ -61,7 +61,7 @@ dfg_function={
 #load parsers
 parsers={}        
 for lang in dfg_function:
-    LANGUAGE = Language('parser/my-languages.so', lang)
+    LANGUAGE = Language('parserX/my-languages.so', lang)
     parser = Parser()
     parser.set_language(LANGUAGE) 
     parser = [parser,dfg_function[lang]]    
