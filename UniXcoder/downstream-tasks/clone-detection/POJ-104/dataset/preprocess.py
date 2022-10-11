@@ -25,7 +25,7 @@ with open("train.jsonl",'w') as f:
 
 with open("valid.jsonl",'w') as f:
     for i in tqdm(range(65,81),total=16):
-        items=files("ProgramData/{}".format(i))
+        items=files("ProgramData\\{}".format(i))
         for item in items:
             js={}
             js['label']=item.split('\\')[1]
