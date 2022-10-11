@@ -68,7 +68,8 @@ def convert_examples_to_features(js,tokenizer,args):
     source_ids = tokenizer.convert_tokens_to_ids(source_tokens)
     padding_length = args.block_size - len(source_ids)
     source_ids += [tokenizer.pad_token_id]*padding_length
-    return InputFeatures(source_tokens,source_ids,js['index'],(js['label']))
+    label = js['label'].split("\\")[1].split(".")[0]
+    return InputFeatures(source_tokens,source_ids,js['index'],int(label))
 
 class TextDataset(Dataset):
     def __init__(self, tokenizer, args, file_path=None):
@@ -110,10 +111,10 @@ class TextDataset(Dataset):
             if shuffle_example.index != index:
                 p_example = shuffle_example
                 break
-            x += 1
-            if x == 50:
-                p_example = shuffle_example
-                break
+            # x += 1
+            # if x == 50:
+            #     p_example = shuffle_example
+            #     break
         n_example = random.sample(self.label_examples[random.sample(labels,1)[0]],1)[0]
         
         # error:  torch.tensor(n_example.input_ids),torch.tensor(label))
@@ -134,7 +135,6 @@ def set_seed(seed=42):
 
 def train(args, train_dataset, model, tokenizer):
     """ Train the model """
-    print(type(train_dataset))
     indices = torch.arange(100)
     training_subset = Subset(train_dataset, indices)
     train_sampler = RandomSampler(training_subset)
@@ -172,8 +172,6 @@ def train(args, train_dataset, model, tokenizer):
             labels = batch[3].to(args.device)
             model.train()
             loss,vec = model(inputs,p_inputs,n_inputs,labels)
-
-            logger.info("we are in batch: ", batch, " with step ", step)
 
             if args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
@@ -215,8 +213,10 @@ def train(args, train_dataset, model, tokenizer):
 def evaluate(args, model, tokenizer, data_file):
     """ Evaluate the model """
     eval_dataset = TextDataset(tokenizer, args, data_file)
-    eval_sampler = SequentialSampler(eval_dataset)
-    eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler,batch_size=args.eval_batch_size, num_workers=4)
+    indices = torch.arange(100)
+    eval_subset = Subset(eval_dataset, indices)
+    eval_sampler = SequentialSampler(eval_subset)
+    eval_dataloader = DataLoader(eval_subset, sampler=eval_sampler,batch_size=args.eval_batch_size, num_workers=4)
     
     eval_output_dir = args.output_dir
     if not os.path.exists(eval_output_dir):
@@ -224,7 +224,7 @@ def evaluate(args, model, tokenizer, data_file):
 
     # Eval!
     logger.info("***** Running evaluation *****")
-    logger.info("  Num examples = %d", len(eval_dataset))
+    logger.info("  Num examples = %d", len(eval_subset))
     logger.info("  Batch size = %d", args.eval_batch_size)
     eval_loss = 0.0
     nb_eval_steps = 0
