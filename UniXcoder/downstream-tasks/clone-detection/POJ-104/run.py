@@ -351,7 +351,7 @@ def main():
     # Evaluation
     results = {}
     if args.do_eval:
-        checkpoint_prefix = 'checkpoint-best-map/model.bin'
+        checkpoint_prefix = 'checkpoint-best-map\\model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model_to_load = model.module if hasattr(model, 'module') else model  
         model_to_load.load_state_dict(torch.load(output_dir))      
@@ -361,7 +361,7 @@ def main():
             logger.info("  %s = %s", key, str(round(result[key]*100 if "map" in key else result[key],2)))
             
     if args.do_test:
-        checkpoint_prefix = 'checkpoint-best-map/model.bin'
+        checkpoint_prefix = 'checkpoint-best-map\\model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model_to_load = model.module if hasattr(model, 'module') else model  
         model_to_load.load_state_dict(torch.load(output_dir))      
