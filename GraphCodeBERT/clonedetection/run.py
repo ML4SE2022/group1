@@ -158,7 +158,7 @@ def convert_examples_to_features(item):
             func=url_to_code[url]
             
             #extract data flow
-            code_tokens,dfg=extract_dataflow(Preprocess().preprocess(func, Mode.SIMPLIFIED),parser,'java')
+            code_tokens,dfg=extract_dataflow(Preprocess().preprocess(func, Mode.SIMPLIFIED),parser,'java') #replaced func = code string with simplified AST
             code_tokens=[tokenizer.tokenize('@ '+x)[1:] if idx!=0 else tokenizer.tokenize(x) for idx,x in enumerate(code_tokens)]
             ori2cur_pos={}
             ori2cur_pos[-1]=(0,0)
