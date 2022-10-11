@@ -1,4 +1,2 @@
 [submodule "TreeSitter/tree-sitter-cpp"]
 	url = https://github.com/tree-sitter/tree-sitter-cpp
-[submodule "GraphCodeBERT/clonedetection/parserX/tree-sitter-c-sharp"]
-	url = https://github.com/tree-sitter/tree-sitter-c-sharp
