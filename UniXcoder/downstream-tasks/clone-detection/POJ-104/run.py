@@ -68,7 +68,7 @@ def convert_examples_to_features(js,tokenizer,args):
     source_ids = tokenizer.convert_tokens_to_ids(source_tokens)
     padding_length = args.block_size - len(source_ids)
     source_ids += [tokenizer.pad_token_id]*padding_length
-    return InputFeatures(source_tokens,source_ids,js['index'],(js['label']))
+    return InputFeatures(source_tokens,source_ids,js['index'],int(js['label']))
 
 class TextDataset(Dataset):
     def __init__(self, tokenizer, args, file_path=None):
@@ -104,16 +104,16 @@ class TextDataset(Dataset):
         labels.remove(label)
         #TODO fix this broken piece of code
         
-        x=0
-        while x < 50:
+        # x=0
+        while True:
             shuffle_example = random.sample(self.label_examples[label],1)[0]
             if shuffle_example.index != index:
                 p_example = shuffle_example
                 break
-            x += 1
-            if x == 50:
-                p_example = shuffle_example
-                break
+            # x += 1
+            # if x == 50:
+            #     p_example = shuffle_example
+            #     break
         n_example = random.sample(self.label_examples[random.sample(labels,1)[0]],1)[0]
         
         # error:  torch.tensor(n_example.input_ids),torch.tensor(label))
