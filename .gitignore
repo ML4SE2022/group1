@@ -132,3 +132,4 @@ dmypy.json
 .idea/
 group1.iml
 /UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset
+/GraphCodeBERT/clonedetection/saved_models

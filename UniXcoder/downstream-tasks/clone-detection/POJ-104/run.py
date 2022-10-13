@@ -105,8 +105,8 @@ class TextDataset(Dataset):
         labels.remove(label)
         #TODO fix this broken piece of code
         
-        x=0
-        while x < 50:
+        #x=0
+        while True:
             shuffle_example = random.sample(self.label_examples[label],1)[0]
             if shuffle_example.index != index:
                 p_example = shuffle_example
@@ -246,7 +246,7 @@ def evaluate(args, model, tokenizer, data_file):
     labels = np.concatenate(labels,0)
     eval_loss = eval_loss / nb_eval_steps
     perplexity = torch.tensor(eval_loss)
-
+    logger.info("TEST?")
     scores=np.matmul(vecs,vecs.T)
     dic={}
     for i in range(scores.shape[0]):
@@ -256,6 +256,7 @@ def evaluate(args, model, tokenizer, data_file):
         dic[int(labels[i])] += 1
     sort_ids = np.argsort(scores, axis=-1, kind='quicksort', order=None)[:,::-1]
     MAP = []
+    logger.info("TEST1?")
     for i in range(scores.shape[0]):
         cont = 0
         label = int(labels[i])
@@ -266,7 +267,7 @@ def evaluate(args, model, tokenizer, data_file):
                 Avep.append((len(Avep)+1)/(j+1))
         MAP.append(sum(Avep)/dic[label])
           
-          
+    logger.info("TEST2?")      
     result = {
         "eval_loss": float(perplexity),
         "eval_map":float(np.mean(MAP))

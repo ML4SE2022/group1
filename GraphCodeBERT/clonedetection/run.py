@@ -158,7 +158,12 @@ def convert_examples_to_features(item):
             func=url_to_code[url]
             
             #extract data flow
-            code_tokens,dfg=extract_dataflow(Preprocess().preprocess(func, Mode.SIMPLIFIED),parser,'java') #replaced func = code string with simplified AST
+            code_tokens,dfg=extract_dataflow(func,parser,'java')
+            
+            code_tokens = code_tokens + [Preprocess().preprocess(func, Mode.SIMPLIFIED)]
+
+            # replaced func = code string with simplified AST
+            # code_tokens,dfg=extract_dataflow(Preprocess().preprocess(func, Mode.SIMPLIFIED),parser,'java')
             code_tokens=[tokenizer.tokenize('@ '+x)[1:] if idx!=0 else tokenizer.tokenize(x) for idx,x in enumerate(code_tokens)]
             ori2cur_pos={}
             ori2cur_pos[-1]=(0,0)
@@ -325,7 +330,7 @@ def train(args, train_dataset, model, tokenizer):
     """ Train the model """
     
     #build dataloader
-    indices = torch.arange(10000)
+    indices = torch.arange(32000)
     training_subset = Subset(train_dataset, indices)
 
     train_sampler = RandomSampler(training_subset)
@@ -426,7 +431,7 @@ def evaluate(args, model, tokenizer, eval_when_training=False):
     #build dataloader
     eval_dataset = TextDataset(tokenizer, args, file_path=args.eval_data_file)
 
-    indices = torch.arange(5000)
+    indices = torch.arange(8000)
     eval_subset = Subset(eval_dataset, indices)
 
     eval_sampler = SequentialSampler(eval_subset)
