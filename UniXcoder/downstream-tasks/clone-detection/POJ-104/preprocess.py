@@ -58,11 +58,7 @@ class Preprocess:
   def preprocess(self, code: str, mode: Mode = Mode.SIMPLIFIED):
     declarators = ["array_declarator", "attributed_declarator", "destructor_name", "function_declarator", "identifier",
                   "operator_name", "parenthesized_declarator", "pointer_declarator", "qualified_identifier", "reference_declarator",
-                  "structured_binding_declarator", "template_function"]
-
-    declarations = ["declaration", "attribute_declaration", "alias_declaration", "static_assert_declaration", "template_declaration",
-                    "using_declaration", "friend_declaration", "field_declaration", "parameter_declaration", "optional_parameter_declaration",
-                    "variadic_parameter_declaration"]
+                  "structured_binding_declarator", "template_function", "declaration", "attribute_declaration", "field_declaration", "parameter_declaration"]
 
     statements = ["attributed_statement", "break_statement", "case_statement", "co_return_statement", "co_yield_statement",
                   "compound_statement", "continue_statement", "do_statement", "expression_statement", "for_range_loop", "for_statement",
@@ -99,14 +95,3 @@ class Preprocess:
       return self.one_to_one(root_node, code, self.traverse_tree(root_node))
     else:
       pass
-
-
-#code = """
-#    int add(int a, int b)
-#    {
-#      int result;
-#      result = a+b;
-#      return result;                  // return statement
-#    }
-#    """
-#print(Preprocess().preprocess(code, Mode.SIMPLIFIED))

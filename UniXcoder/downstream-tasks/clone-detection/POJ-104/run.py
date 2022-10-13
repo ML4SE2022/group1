@@ -102,22 +102,15 @@ class TextDataset(Dataset):
         index = self.examples[i].index
         labels = list(self.label_examples)
         labels.remove(label)
-        #TODO fix this broken piece of code
         
-        # x=0
         while True:
             shuffle_example = random.sample(self.label_examples[label],1)[0]
             if shuffle_example.index != index:
                 p_example = shuffle_example
                 break
-            # x += 1
-            # if x == 50:
-            #     p_example = shuffle_example
-            #     break
+
         n_example = random.sample(self.label_examples[random.sample(labels,1)[0]],1)[0]
         
-        # error:  torch.tensor(n_example.input_ids),torch.tensor(label))
-        #   TypeError: new(): invalid data type 'str'
 
         return (torch.tensor(self.examples[i].input_ids),torch.tensor(p_example.input_ids),
                 torch.tensor(n_example.input_ids),torch.tensor(label))
@@ -134,9 +127,8 @@ def set_seed(seed=42):
 
 def train(args, train_dataset, model, tokenizer):
     """ Train the model """
-    print(type(train_dataset))
-    indices = torch.arange(start=0, end=8000, step=80)
-    training_subset = Subset(train_dataset, indices)
+    #indices = torch.arange(start=0, end=8000, step=80)
+    training_subset = train_dataset #Subset(train_dataset, indices)
     train_sampler = RandomSampler(training_subset)
     train_dataloader = DataLoader(training_subset, sampler=train_sampler, 
                                   batch_size=args.train_batch_size,num_workers=4,pin_memory=True)
@@ -172,8 +164,6 @@ def train(args, train_dataset, model, tokenizer):
             labels = batch[3].to(args.device)
             model.train()
             loss,vec = model(inputs,p_inputs,n_inputs,labels)
-
-            logger.info("we are in batch: ", batch, " with step ", step)
 
             if args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
@@ -215,8 +205,8 @@ def train(args, train_dataset, model, tokenizer):
 def evaluate(args, model, tokenizer, data_file):
     """ Evaluate the model """
     eval_dataset = TextDataset(tokenizer, args, data_file)
-    indices = torch.arange(start=0, end=8000, step=80)
-    eval_dataset = Subset(eval_dataset, indices)
+    #indices = torch.arange(start=0, end=8000, step=80)
+    #eval_dataset = Subset(eval_dataset, indices)
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler,batch_size=args.eval_batch_size, num_workers=4)
     
@@ -325,8 +315,7 @@ def main():
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',level=logging.INFO )
     #set device
-    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(torch.cuda.is_available())
     args.n_gpu = torch.cuda.device_count()
     args.device = device
