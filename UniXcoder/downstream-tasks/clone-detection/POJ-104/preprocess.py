@@ -43,16 +43,16 @@ class Preprocess:
       if root_node in FS or root_node.type in code:
           # Is Leaf
           if root_node.child_count == 0:
-              sequence += name
+              sequence += name + " "
           else:
-              sequence += name + "::left"
+              sequence += name + "::left" + " "
               for node in root_node.children:
-                  sequence += self.one_to_one(node, code, FS)
-              sequence += name + "::right"
+                  sequence += self.one_to_one(node, code, FS) + " "
+              sequence += name + "::right" + " "
           return sequence
       else:
           for node in root_node.children:
-              sequence += self.one_to_one(node, code, FS)
+              sequence += self.one_to_one(node, code, FS) + " "
       return sequence
 
   def preprocess(self, code: str, mode: Mode = Mode.SIMPLIFIED):
