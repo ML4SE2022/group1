@@ -135,7 +135,7 @@ def set_seed(seed=42):
 def train(args, train_dataset, model, tokenizer):
     """ Train the model """
     print(type(train_dataset))
-    indices = torch.arange(100)
+    indices = torch.arange(start=0, end=8000, step=80)
     training_subset = Subset(train_dataset, indices)
     train_sampler = RandomSampler(training_subset)
     train_dataloader = DataLoader(training_subset, sampler=train_sampler, 
@@ -215,6 +215,8 @@ def train(args, train_dataset, model, tokenizer):
 def evaluate(args, model, tokenizer, data_file):
     """ Evaluate the model """
     eval_dataset = TextDataset(tokenizer, args, data_file)
+    indices = torch.arange(start=0, end=8000, step=80)
+    eval_dataset = Subset(eval_dataset, indices)
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler,batch_size=args.eval_batch_size, num_workers=4)
     
@@ -323,7 +325,9 @@ def main():
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',level=logging.INFO )
     #set device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
+    print(torch.cuda.is_available())
     args.n_gpu = torch.cuda.device_count()
     args.device = device
     logger.info("device: %s, n_gpu: %s",device, args.n_gpu)
