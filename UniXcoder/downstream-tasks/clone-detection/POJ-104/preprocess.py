@@ -43,12 +43,12 @@ class Preprocess:
       if root_node in FS or root_node.type in code:
           # Is Leaf
           if root_node.child_count == 0:
-              sequence += name
+              sequence += root_node.text.decode("utf8") + " "
           else:
-              sequence += name + "::left"
+              sequence += name + "::left "
               for node in root_node.children:
                   sequence += self.one_to_one(node, code, FS)
-              sequence += name + "::right"
+              sequence += name + "::right "
           return sequence
       else:
           for node in root_node.children:
@@ -72,7 +72,7 @@ class Preprocess:
     Language.build_library(
       'build/my-languages.so',
       [
-        '..\\..\\..\\..\\TreeSitter\\tree-sitter-cpp',
+        '..\\TreeSitter\\tree-sitter-cpp',
       ]
     )
     # Add the cpp language to the parser
@@ -101,12 +101,12 @@ class Preprocess:
       pass
 
 
-#code = """
-#    int add(int a, int b)
-#    {
-#      int result;
-#      result = a+b;
-#      return result;                  // return statement
-#    }
-#    """
-#print(Preprocess().preprocess(code, Mode.SIMPLIFIED))
+code = """
+   int add(int a, int b)
+   {
+     int result;
+     result = a+b;
+     return result;                  // return statement
+   }
+   """
+print(Preprocess().preprocess(code, Mode.SIMPLIFIED))
