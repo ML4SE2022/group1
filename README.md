@@ -1,10 +1,5 @@
-# Code Pretraining Models
-
-This repo contains code pretraining models in the CodeBERT series from Microsoft, including four models as of July 2022.
-- CodeBERT (EMNLP 2020)
-- GraphCodeBERT (ICLR 2021)
-- UniXcoder (ACL 2022)
-- CodeReviewer (ESEC/FSE 2022)
+Welcome to Group 1 Repository.
+This project attempts to improve the code clone detection by incorporating AST in the fine-tuning stage, not only pretraining like the original UniXcoder research did.
 
 # CodeBERT
 
@@ -14,6 +9,11 @@ This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-
 
 - pip install torch
 - pip install transformers
+
+### Tree-Sitter
+In order to get the full AST, Tree-Sitter library is used.
+You can set your own path
+UniXcoder/downstream-tasks/clone-detection/POJ-104/preprocess.py
 
 ### Quick Tour
 We use huggingface/transformers framework to train the model. You can use our model like the pre-trained Roberta base. Now, We give an example on how to load the model.
@@ -89,10 +89,6 @@ The detailed outputs are as follows:
 {'sequence': '<s> if (x is not None) AND (x>1)</s>', 'score': 0.007619690150022507, 'token': 4248}
 ```
 
-### Downstream Tasks
-
-For Code Search and Code Docsmentation Generation tasks, please refer to the [CodeBERT](https://github.com/guoday/CodeBERT/tree/master/CodeBERT) folder.
-
 
 
 # GraphCodeBERT
@@ -102,17 +98,12 @@ This repo also provides the code for reproducing the experiments in [GraphCodeBE
 For downstream tasks like code search, clone detection, code refinement and code translation, please refer to the [GraphCodeBERT](https://github.com/guoday/CodeBERT/tree/master/GraphCodeBERT) folder.
 
 # UniXcoder
-
-This repo will provide the code for reproducing the experiments in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
+This repo will provide the code for improving the code clone detection in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
 
 Please refer to the [UniXcoder](https://github.com/microsoft/CodeBERT/tree/master/UniXcoder) folder for tutorials and downstream tasks.
 
-# CodeReviewer
 
-This repo also provides the code for reproducing the experiments in [CodeReviewer: Pre-Training for Automating Code Review Activities](https://arxiv.org/abs/2203.09095). CodeReviewer is a model pre-trained with code change and code review data to support code review tasks.
-
-Please refer to the [CodeReviewer](https://github.com/microsoft/CodeBERT/tree/master/CodeReviewer) folder for tutorials and downstream tasks.
 
 ## Contact
 
-Feel free to contact Daya Guo (guody5@mail2.sysu.edu.cn), Shuai Lu (shuailu@microsoft.com) and Nan Duan (nanduan@microsoft.com) if you have any further questions.
+Feel free to contact Group 1 via MatterMost if there is any question!

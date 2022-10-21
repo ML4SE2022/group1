@@ -68,7 +68,7 @@ class Preprocess:
     Language.build_library(
       'build/my-languages.so',
       [
-        '..\\TreeSitter\\tree-sitter-cpp',
+        'TreeSitter/tree-sitter-cpp',
       ]
     )
     # Add the cpp language to the parser
