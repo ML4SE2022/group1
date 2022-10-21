@@ -1,94 +1,35 @@
 Welcome to Group 1 Repository.
 This project attempts to improve the code clone detection by incorporating AST in the fine-tuning stage, not only pretraining like the original UniXcoder research did.
 
-# CodeBERT
+This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-Trained Model for Programming and Natural Languages](https://arxiv.org/pdf/2002.08155.pdf). CodeBERT is a pre-trained model for programming language, which is a multi-programming-lingual model pre-trained on NL-PL pairs in 6 programming languages (Python, Java, JavaScript, PHP, Ruby, Go).
 
-This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-Trained Model for Programming and Natural Languages](https://arxiv.org/pdf/2002.08155.pdf). CodeBERT is a pre-trained model for programming language, which is a multi-programming-lingual model pre-trained on NL-PL pairs in 6 programming languages (Python, Java, JavaScript, PHP, Ruby, Go). 
+# Set up 
 
-### Dependency
+First, you should clone this repository.
+Before installing libraries, we highly recommend to set up the requirements in a virtual environment of your own choice.
 
+## Dependency
 - pip install torch
 - pip install transformers
+- pip install -U scikit-learn
+- pip install tree-sitter (If you do not have a C-compiler, you will get an error. Please follow the solution mentioned in the error. )
 
-### Tree-Sitter
+## Torch
+If you have a fancy gpu that can run torch with cuda, go ahead and install cuda version!
+[Torch-Website](https://pytorch.org/) gives you a command for you. 
+Make sure that you have installed CudaToolkit and the versions between torch cuda and your CudaToolkit matches.
+
+It is not mandatory to have GPU to run our code. Using Cuda is your choice.
+
+## Tree-Sitter
 In order to get the full AST, Tree-Sitter library is used.
-You can set your own path
-UniXcoder/downstream-tasks/clone-detection/POJ-104/preprocess.py
+First, clone the repository from [Tree-Sitter-C++](https://github.com/tree-sitter/tree-sitter-cpp) 
+You can set your own path inside Language.build_library() in preprocess() function in model_name/downstream-tasks/clone-detection/POJ-104/preprocess.py.
 
-### Quick Tour
-We use huggingface/transformers framework to train the model. You can use our model like the pre-trained Roberta base. Now, We give an example on how to load the model.
-```python
-import torch
-from transformers import RobertaTokenizer, RobertaConfig, RobertaModel
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
-model = RobertaModel.from_pretrained("microsoft/codebert-base")
-model.to(device)
-```
-
-### NL-PL Embeddings
-
-Here, we give an example to obtain embedding from CodeBERT.
-
-```python
->>> from transformers import AutoTokenizer, AutoModel
->>> import torch
->>> tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
->>> model = AutoModel.from_pretrained("microsoft/codebert-base")
->>> nl_tokens=tokenizer.tokenize("return maximum value")
-['return', 'Ġmaximum', 'Ġvalue']
->>> code_tokens=tokenizer.tokenize("def max(a,b): if a>b: return a else return b")
-['def', 'Ġmax', '(', 'a', ',', 'b', '):', 'Ġif', 'Ġa', '>', 'b', ':', 'Ġreturn', 'Ġa', 'Ġelse', 'Ġreturn', 'Ġb']
->>> tokens=[tokenizer.cls_token]+nl_tokens+[tokenizer.sep_token]+code_tokens+[tokenizer.sep_token]
-['<s>', 'return', 'Ġmaximum', 'Ġvalue', '</s>', 'def', 'Ġmax', '(', 'a', ',', 'b', '):', 'Ġif', 'Ġa', '>', 'b', ':', 'Ġreturn', 'Ġa', 'Ġelse', 'Ġreturn', 'Ġb', '</s>']
->>> tokens_ids=tokenizer.convert_tokens_to_ids(tokens)
-[0, 30921, 4532, 923, 2, 9232, 19220, 1640, 102, 6, 428, 3256, 114, 10, 15698, 428, 35, 671, 10, 1493, 671, 741, 2]
->>> context_embeddings=model(torch.tensor(tokens_ids)[None,:])[0]
-torch.Size([1, 23, 768])
-tensor([[-0.1423,  0.3766,  0.0443,  ..., -0.2513, -0.3099,  0.3183],
-        [-0.5739,  0.1333,  0.2314,  ..., -0.1240, -0.1219,  0.2033],
-        [-0.1579,  0.1335,  0.0291,  ...,  0.2340, -0.8801,  0.6216],
-        ...,
-        [-0.4042,  0.2284,  0.5241,  ..., -0.2046, -0.2419,  0.7031],
-        [-0.3894,  0.4603,  0.4797,  ..., -0.3335, -0.6049,  0.4730],
-        [-0.1433,  0.3785,  0.0450,  ..., -0.2527, -0.3121,  0.3207]],
-       grad_fn=<SelectBackward>)
-```
-
-
-### Probing
-
-As stated in the paper, CodeBERT is not suitable for mask prediction task, while CodeBERT (MLM) is suitable for mask prediction task.
-
-
-We give an example on how to use CodeBERT(MLM) for mask prediction task.
-```python
-from transformers import RobertaConfig, RobertaTokenizer, RobertaForMaskedLM, pipeline
-
-model = RobertaForMaskedLM.from_pretrained("microsoft/codebert-base-mlm")
-tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
-
-CODE = "if (x is not None) <mask> (x>1)"
-fill_mask = pipeline('fill-mask', model=model, tokenizer=tokenizer)
-
-outputs = fill_mask(CODE)
-print(outputs)
-
-```
-Results
-```python
-'and', 'or', 'if', 'then', 'AND'
-```
-The detailed outputs are as follows:
-```python
-{'sequence': '<s> if (x is not None) and (x>1)</s>', 'score': 0.6049249172210693, 'token': 8}
-{'sequence': '<s> if (x is not None) or (x>1)</s>', 'score': 0.30680200457572937, 'token': 50}
-{'sequence': '<s> if (x is not None) if (x>1)</s>', 'score': 0.02133703976869583, 'token': 114}
-{'sequence': '<s> if (x is not None) then (x>1)</s>', 'score': 0.018607674166560173, 'token': 172}
-{'sequence': '<s> if (x is not None) AND (x>1)</s>', 'score': 0.007619690150022507, 'token': 4248}
-```
-
+As this library is not build only with python, C-compiler is necessary. 
+This can be different per os version, and the choice is up to you.
+For Windows user, installing visual studio can be a solution by looking at this website [microsoft guide](https://devblogs.microsoft.com/cppblog/getting-started-with-visual-studio-for-c-and-cpp-development/#Setup).
+Or the error while installing tree-sitter can perfectly guide you to resolve the issue.
 
 
 # GraphCodeBERT
@@ -97,13 +38,58 @@ This repo also provides the code for reproducing the experiments in [GraphCodeBE
 
 For downstream tasks like code search, clone detection, code refinement and code translation, please refer to the [GraphCodeBERT](https://github.com/guoday/CodeBERT/tree/master/GraphCodeBERT) folder.
 
+Please check the README in GraphCodeBERT before you start running them.
+
+## How to run Clone Detection with GraphCodeBERT?
+1. Go to run.py under GraphCodeBERT.
+2. Go to clonedetection of GraphCodeBERT.
+3. We recommend the following code snippet to run the run.py
+```
+python run.py \
+--output_dir=saved_models \
+--config_name=microsoft/graphcodebert-base \
+--model_name_or_path=microsoft/graphcodebert-base \
+--tokenizer_name=microsoft/graphcodebert-base \
+--do_train --train_data_file=dataset/train.txt \
+--eval_data_file=dataset/valid.txt \
+--test_data_file=dataset/test.txt \
+--epoch 1 \
+--code_length 256 \
+--data_flow_length 64 \
+--train_batch_size 4 \
+--eval_batch_size 32 \
+--learning_rate 2e-5 \
+--max_grad_norm 1.0 \
+--evaluate_during_training \
+--seed 123456 2>&1| tee saved_models/train.log
+```
+
 # UniXcoder
 This repo will provide the code for improving the code clone detection in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
 
 Please refer to the [UniXcoder](https://github.com/microsoft/CodeBERT/tree/master/UniXcoder) folder for tutorials and downstream tasks.
 
+Please check the README in UniXcoder before you start running them.
+
+## How to run Clone Detection with UniXcoder?
+1. [Download POJ-104 dataset and follow the instructions.](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
+2. Go to POJ-104 under clone-detection of UniXcoder.
+3. We recommend the following code snippet to run the run.py.
+
+```
+python run.py \
+--output_dir saved_models \
+--model_name_or_path microsoft/unixcoder-base \
+--do_train --train_data_file dataset/train.jsonl \
+--eval_data_file dataset/valid.jsonl \
+--test_data_file dataset/test.jsonl \
+--num_train_epochs 2 --block_size 350 \
+--train_batch_size 4 --eval_batch_size 8 \
+--learning_rate 2e-5 --max_grad_norm 1.0 \
+--seed 123456 
+```
 
 
 ## Contact
-
-Feel free to contact Group 1 via MatterMost if there is any question!
+Feel free to contact Group 1 via MatterMost if there is any question! Might be able to help you in terms of set up :)
+(Daan Hofman, Pascal Benschop, Jeongwoo Park, Leon Kempen, Aron Bevelander)
