@@ -8,6 +8,16 @@ This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-
 First, you should clone this repository.
 Before installing libraries, we highly recommend to set up the requirements in a virtual environment of your own choice.
 
+In case you use mac or linux, the path we set using double backslash might not work. Please adjust to your own OS.
+Paths are in 
+1. UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset/preprocess.py
+2. UniXcoder/downstream-tasks/clone-detection/POJ-104/preprocess.py
+3. UniXcoder/downstream-tasks/clone-detection/POJ-104/run.py
+4. GraphCodeBERT/clonedetection/run.py
+5. GraphCodeBERT/clonedetection/preprocess.py
+
+Beside these files, if you notice any path error, please adjust those as well.
+
 ## Dependency
 - pip install torch
 - pip install transformers
@@ -23,14 +33,20 @@ It is not mandatory to have GPU to run our code. Using Cuda is your choice.
 
 ## Tree-Sitter
 In order to get the full AST, Tree-Sitter library is used.
-First, clone the repository from [Tree-Sitter-C++](https://github.com/tree-sitter/tree-sitter-cpp) 
+We have already cloned treesitter repositories and added to our folder, so you do not need to do manual work.
+Make sure you download TreeSitter submodule from our github using
+```
+git pull --recurse-submodules
+```
+
+However, if it does not work for you somehow, then you can manually download the repository and change the path like the following:
+First, clone the repository from [Tree-Sitter-C++](https://github.com/tree-sitter/tree-sitter-cpp) and Parser_X(GraphCodeBERT/clonedetection/parserX/build.sh).
 You can set your own path inside Language.build_library() in preprocess() function in model_name/downstream-tasks/clone-detection/POJ-104/preprocess.py.
 
 As this library is not build only with python, C-compiler is necessary. 
 This can be different per os version, and the choice is up to you.
 For Windows user, installing visual studio can be a solution by looking at this website [microsoft guide](https://devblogs.microsoft.com/cppblog/getting-started-with-visual-studio-for-c-and-cpp-development/#Setup).
 Or the error while installing tree-sitter can perfectly guide you to resolve the issue.
-
 
 # GraphCodeBERT
 
