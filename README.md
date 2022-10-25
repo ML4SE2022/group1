@@ -5,7 +5,8 @@ This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-
 
 # Set up 
 
-First, you should clone this repository.
+First, you should clone this repository together with submodules for tree-sitters.
+Our submodules exist in TreeSitter/tree-sitter-cpp and GraphCodeBERT/clonedetection/parserX/tree-sitter-java.
 Before installing libraries, we highly recommend to set up the requirements in a virtual environment of your own choice.
 
 In case you use mac or linux, the path we set using double backslash might not work. Please adjust to your own OS.
@@ -24,6 +25,11 @@ Beside these files, if you notice any path error, please adjust those as well.
 - pip install -U scikit-learn
 - pip install tree-sitter (If you do not have a C-compiler, you will get an error. Please follow the solution mentioned in the error. )
 
+You can choose to simply install with requirements.txt.
+```
+pip install -r requirements.txt
+```
+
 ## Torch
 If you have a fancy gpu that can run torch with cuda, go ahead and install cuda version!
 [Torch-Website](https://pytorch.org/) gives you a command for you. 
@@ -34,10 +40,6 @@ It is not mandatory to have GPU to run our code. Using Cuda is your choice.
 ## Tree-Sitter
 In order to get the full AST, Tree-Sitter library is used.
 We have already cloned treesitter repositories and added to our folder, so you do not need to install manually.
-Make sure you download TreeSitter submodule from our github using
-```
-git pull --recurse-submodules
-```
 
 However, if it does not work for you somehow, then you can manually download the repository and change the path like the following:
 First, clone the repository from [Tree-Sitter-C++](https://github.com/tree-sitter/tree-sitter-cpp) and Parser_X(GraphCodeBERT/clonedetection/parserX/build.sh).
