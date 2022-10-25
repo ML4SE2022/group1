@@ -68,7 +68,8 @@ class Preprocess:
     Language.build_library(
       'build/my-languages.so',
       [
-        '..\\TreeSitter\\tree-sitter-cpp',
+        '..\\..\\..\\..\\TreeSitter\\tree-sitter-cpp',
+
       ]
     )
     # Add the cpp language to the parser
@@ -95,14 +96,3 @@ class Preprocess:
       return self.one_to_one(root_node, code, self.traverse_tree(root_node))
     else:
       pass
-
-
-code = """
-   int add(int a, int b)
-   {
-     int result;
-     result = a+b;
-     return result;                  // return statement
-   }
-   """
-print(Preprocess().preprocess(code, Mode.SIMPLIFIED))
