@@ -1,2 +1,5 @@
 [submodule "TreeSitter/tree-sitter-cpp"]
 	url = https://github.com/tree-sitter/tree-sitter-cpp
+[submodule "GraphCodeBERT/clonedetection/parserX/tree-sitter-java"]
+	path = GraphCodeBERT/clonedetection/parserX/tree-sitter-java
+	url = https://github.com/ML4SE2022/group1.git
