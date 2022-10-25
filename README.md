@@ -33,7 +33,7 @@ It is not mandatory to have GPU to run our code. Using Cuda is your choice.
 
 ## Tree-Sitter
 In order to get the full AST, Tree-Sitter library is used.
-We have already cloned treesitter repositories and added to our folder, so you do not need to do manual work.
+We have already cloned treesitter repositories and added to our folder, so you do not need to install manually.
 Make sure you download TreeSitter submodule from our github using
 ```
 git pull --recurse-submodules
@@ -61,22 +61,22 @@ Please check the README in GraphCodeBERT before you start running them.
 2. Go to clonedetection of GraphCodeBERT.
 3. We recommend the following code snippet to run the run.py
 ```
-python run.py \
---output_dir=saved_models \
---config_name=microsoft/graphcodebert-base \
---model_name_or_path=microsoft/graphcodebert-base \
---tokenizer_name=microsoft/graphcodebert-base \
---do_train --train_data_file=dataset/train.txt \
---eval_data_file=dataset/valid.txt \
---test_data_file=dataset/test.txt \
---epoch 1 \
---code_length 256 \
---data_flow_length 64 \
---train_batch_size 4 \
---eval_batch_size 32 \
---learning_rate 2e-5 \
---max_grad_norm 1.0 \
---evaluate_during_training \
+python run.py
+--output_dir=saved_models
+--config_name=microsoft/graphcodebert-base
+--model_name_or_path=microsoft/graphcodebert-base
+--tokenizer_name=microsoft/graphcodebert-base
+--do_train --train_data_file=dataset/train.txt
+--eval_data_file=dataset/valid.txt
+--test_data_file=dataset/test.txt
+--epoch 1
+--code_length 256
+--data_flow_length 64
+--train_batch_size 4
+--eval_batch_size 32
+--learning_rate 2e-5
+--max_grad_norm 1.0
+--evaluate_during_training
 --seed 123456 2>&1| tee saved_models/train.log
 ```
 
@@ -93,15 +93,15 @@ Please check the README in UniXcoder before you start running them.
 3. We recommend the following code snippet to run the run.py.
 
 ```
-python run.py \
---output_dir saved_models \
---model_name_or_path microsoft/unixcoder-base \
---do_train --train_data_file dataset/train.jsonl \
---eval_data_file dataset/valid.jsonl \
---test_data_file dataset/test.jsonl \
---num_train_epochs 2 --block_size 350 \
---train_batch_size 4 --eval_batch_size 8 \
---learning_rate 2e-5 --max_grad_norm 1.0 \
+python run.py
+--output_dir saved_models
+--model_name_or_path microsoft/unixcoder-base
+--do_train --train_data_file dataset/train.jsonl
+--eval_data_file dataset/valid.jsonl
+--test_data_file dataset/test.jsonl
+--num_train_epochs 2 --block_size 350
+--train_batch_size 4 --eval_batch_size 8
+--learning_rate 2e-5 --max_grad_norm 1.0
 --seed 123456 
 ```
 
