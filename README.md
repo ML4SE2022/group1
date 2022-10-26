@@ -117,7 +117,7 @@ python run.py
 ```
 
 
-# Fine-tuned model & Interence
+# Fine-tuned model & Inference
 Our fine-tuned model can be found in [UniXcoder-simplified-AST](link).
 
 ## How can we use the model for inference?
