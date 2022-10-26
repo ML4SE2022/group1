@@ -52,6 +52,27 @@ Or the error while installing tree-sitter can perfectly guide you to resolve the
 
 # How to Fine-Tune?
 
+## How to choose mode: Simplified AST, Full AST, code or both?
+
+convert_examples_to_features() in run.py should be adjusted to select certain mode.
+Update the argument of extract_dataflow() for GraphCodeBERT.
+Update the argument of tokenizer.tokenize() for UniXcoder.
+
+1. Running with Simplified AST
+```
+Preprocess().preprocess(func, Mode.SIMPLIFIED)
+```
+
+2. Running with Full AST
+
+```
+Preprocess().preprocess(func, Mode.FULL)
+```
+
+3. Running with AST and code 
+
+
+
 ## UniXcoder
 This repo will provide the code for improving the code clone detection in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
 
