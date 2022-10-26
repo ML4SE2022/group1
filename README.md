@@ -59,7 +59,7 @@ Please refer to the [UniXcoder](https://github.com/microsoft/CodeBERT/tree/maste
 
 Please check the README in UniXcoder before you start running them.
 
-We have fine-tuned UniXcoder using the following pretrained model [link] (https://huggingface.co/microsoft/unixcoder-base). 
+We have fine-tuned UniXcoder using the following pretrained model [link](https://huggingface.co/microsoft/unixcoder-base). 
 
 ### How to train Clone Detection with UniXcoder?
 1. [Download POJ-104 dataset and follow the instructions.](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
