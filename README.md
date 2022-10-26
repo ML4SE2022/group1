@@ -50,7 +50,36 @@ This can be different per os version, and the choice is up to you.
 For Windows user, installing visual studio can be a solution by looking at this website [microsoft guide](https://devblogs.microsoft.com/cppblog/getting-started-with-visual-studio-for-c-and-cpp-development/#Setup).
 Or the error while installing tree-sitter can perfectly guide you to resolve the issue.
 
-# GraphCodeBERT
+# How to Fine-Tune?
+
+## UniXcoder
+This repo will provide the code for improving the code clone detection in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
+
+Please refer to the [UniXcoder](https://github.com/microsoft/CodeBERT/tree/master/UniXcoder) folder for tutorials and downstream tasks.
+
+Please check the README in UniXcoder before you start running them.
+
+We have fine-tuned UniXcoder using the following pretrained model [link] (https://huggingface.co/microsoft/unixcoder-base). 
+
+### How to train Clone Detection with UniXcoder?
+1. [Download POJ-104 dataset and follow the instructions.](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
+2. Go to POJ-104 under clone-detection of UniXcoder.
+3. We recommend the following code snippet to run the run.py.
+
+```
+python run.py
+--output_dir saved_models
+--model_name_or_path microsoft/unixcoder-base
+--do_train --train_data_file dataset/train.jsonl
+--eval_data_file dataset/valid.jsonl
+--test_data_file dataset/test.jsonl
+--num_train_epochs 2 --block_size 350
+--train_batch_size 4 --eval_batch_size 8
+--learning_rate 2e-5 --max_grad_norm 1.0
+--seed 123456 
+```
+
+## GraphCodeBERT
 
 This repo also provides the code for reproducing the experiments in [GraphCodeBERT: Pre-training Code Representations with Data Flow](https://openreview.net/pdf?id=jLoC4ez43PZ). GraphCodeBERT is a pre-trained model for programming language that considers the inherent structure of code i.e. data flow, which is a multi-programming-lingual model pre-trained on NL-PL pairs in 6 programming languages (Python, Java, JavaScript, PHP, Ruby, Go). 
 
@@ -60,7 +89,7 @@ Please check the README in GraphCodeBERT before you start running them.
 
 We have fine-tuned GraphCodeBERT using the following pretrained model [link](https://huggingface.co/microsoft/graphcodebert-base).
 
-## How to run Clone Detection with GraphCodeBERT?
+### How to train Clone Detection with GraphCodeBERT?
 
 For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
 
@@ -87,33 +116,36 @@ python run.py
 --seed 123456 2>&1| tee saved_models/train.log
 ```
 
-# UniXcoder
-This repo will provide the code for improving the code clone detection in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
 
-Please refer to the [UniXcoder](https://github.com/microsoft/CodeBERT/tree/master/UniXcoder) folder for tutorials and downstream tasks.
+# Fine-tuned model & Interence
+Our fine-tuned model can be found in [UniXcoder-simplified-AST](link).
 
-Please check the README in UniXcoder before you start running them.
-
-We have fine-tuned UniXcoder using the following pretrained model [link] (https://huggingface.co/microsoft/unixcoder-base). 
-
-## How to run Clone Detection with UniXcoder?
-1. [Download POJ-104 dataset and follow the instructions.](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
-2. Go to POJ-104 under clone-detection of UniXcoder.
-3. We recommend the following code snippet to run the run.py.
+## How can we use the model for inference?
+Place the downloaded fine-tuned model under UniXcoder/downstream-tasks/clone-detection/POJ-104/saved_models/checkpoint-best-map.
+Run the command below.
 
 ```
-python run.py
---output_dir saved_models
---model_name_or_path microsoft/unixcoder-base
---do_train --train_data_file dataset/train.jsonl
---eval_data_file dataset/valid.jsonl
---test_data_file dataset/test.jsonl
---num_train_epochs 2 --block_size 350
---train_batch_size 4 --eval_batch_size 8
---learning_rate 2e-5 --max_grad_norm 1.0
---seed 123456 
+python run.py 
+--output_dir saved_models 
+--model_name_or_path microsoft/unixcoder-base 
+--do_eval 
+--eval_data_file dataset/valid.jsonl 
+--test_data_file dataset/test.jsonl 
+--block_size 350 
+--eval_batch_size 4 
+--learning_rate 2e-5 
+--max_grad_norm 1.0 
+--seed 123456
 ```
 
+## Results
+Here is the result that you can obtain with our fine-tuned model and also the original UniXcoder result.
+The interpretation can be found in our report.
+
+| Model                        | mAP    |
+|------------------------------|--------|
+| Original UniXcoder Reference | 0.9052 |
+| UniXcoder + Simplified AST   | 0.5571 |
 
 ## Contact
 Feel free to contact Group 1 via MatterMost if there is any question! Might be able to help you in terms of set up :)
