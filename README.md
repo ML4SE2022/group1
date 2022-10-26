@@ -64,6 +64,7 @@ We have fine-tuned UniXcoder using the following pretrained model [link](https:/
 ### Dataset
 
 Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
+
 1.Download dataset from website or run the following command:
 ```
 cd dataset
@@ -82,6 +83,7 @@ cd ..
 ```
 
 ### How to train Clone Detection with UniXcoder?
+
 1. Go to POJ-104 under clone-detection of UniXcoder.
 2. We recommend the following code snippet to run the run.py.
 
@@ -109,9 +111,11 @@ Please check the README in GraphCodeBERT before you start running them.
 We have fine-tuned GraphCodeBERT using the following pretrained model [link](https://huggingface.co/microsoft/graphcodebert-base).
 
 ### Dataset
+
 For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
 
 ### How to train Clone Detection with GraphCodeBERT?
+
 1. Go to run.py under GraphCodeBERT/clonedetection.
 3. We recommend the following code snippet to run the run.py
 ```
@@ -136,9 +140,11 @@ python run.py
 
 
 # Fine-tuned model & Inference
+
 Our fine-tuned model can be found in [UniXcoder-simplified-AST](link).
 
 ## How can we use the model for inference?
+
 Place the downloaded fine-tuned model under UniXcoder/downstream-tasks/clone-detection/POJ-104/saved_models/checkpoint-best-map.
 Run the command below.
 
@@ -157,6 +163,7 @@ python run.py
 ```
 
 ## Results
+
 Here is the result that you can obtain with our fine-tuned model and also the original UniXcoder result.
 The interpretation can be found in our report.
 
