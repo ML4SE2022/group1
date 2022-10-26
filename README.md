@@ -61,10 +61,29 @@ Please check the README in UniXcoder before you start running them.
 
 We have fine-tuned UniXcoder using the following pretrained model [link](https://huggingface.co/microsoft/unixcoder-base). 
 
+### Dataset
+
+Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
+1.Download dataset from website or run the following command:
+```
+cd dataset
+pip install gdown
+gdown https://drive.google.com/uc?id=0B2i-vWnOu7MxVlJwQXN6eVNONUU
+tar -xvf programs.tar.gz
+cd ..
+```
+
+2.Preprocess data
+
+```
+cd dataset
+python preprocess.py
+cd ..
+```
+
 ### How to train Clone Detection with UniXcoder?
-1. [Download POJ-104 dataset and follow the instructions.](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
-2. Go to POJ-104 under clone-detection of UniXcoder.
-3. We recommend the following code snippet to run the run.py.
+1. Go to POJ-104 under clone-detection of UniXcoder.
+2. We recommend the following code snippet to run the run.py.
 
 ```
 python run.py
@@ -89,12 +108,11 @@ Please check the README in GraphCodeBERT before you start running them.
 
 We have fine-tuned GraphCodeBERT using the following pretrained model [link](https://huggingface.co/microsoft/graphcodebert-base).
 
-### How to train Clone Detection with GraphCodeBERT?
-
+### Dataset
 For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
 
-1. Go to run.py under GraphCodeBERT.
-2. Go to clonedetection of GraphCodeBERT.
+### How to train Clone Detection with GraphCodeBERT?
+1. Go to run.py under GraphCodeBERT/clonedetection.
 3. We recommend the following code snippet to run the run.py
 ```
 python run.py
