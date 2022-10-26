@@ -58,7 +58,12 @@ For downstream tasks like code search, clone detection, code refinement and code
 
 Please check the README in GraphCodeBERT before you start running them.
 
+We have fine-tuned GraphCodeBERT using the following pretrained model [link](https://huggingface.co/microsoft/graphcodebert-base).
+
 ## How to run Clone Detection with GraphCodeBERT?
+
+For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
+
 1. Go to run.py under GraphCodeBERT.
 2. Go to clonedetection of GraphCodeBERT.
 3. We recommend the following code snippet to run the run.py
@@ -88,6 +93,8 @@ This repo will provide the code for improving the code clone detection in [UniXc
 Please refer to the [UniXcoder](https://github.com/microsoft/CodeBERT/tree/master/UniXcoder) folder for tutorials and downstream tasks.
 
 Please check the README in UniXcoder before you start running them.
+
+We have fine-tuned UniXcoder using the following pretrained model [link] (https://huggingface.co/microsoft/unixcoder-base). 
 
 ## How to run Clone Detection with UniXcoder?
 1. [Download POJ-104 dataset and follow the instructions.](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
