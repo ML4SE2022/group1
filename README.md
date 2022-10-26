@@ -69,9 +69,17 @@ Preprocess().preprocess(func, Mode.SIMPLIFIED)
 Preprocess().preprocess(func, Mode.FULL)
 ```
 
-3. Running with AST and code 
+3. UniXcoder: Running with AST and code 
 
+```
+code_tokens = tokenizer.tokenize(code+Preprocess().preprocess(code, Mode.SIMPLIFIED))[:args.block_size-4]
+```
 
+4. GraphCodeBERT: Running with AST and code
+
+```
+code_tokens,dfg=extract_dataflow(func+Preprocess().preprocess(func, Mode.SIMPLIFIED),parser,'java')
+```
 
 ## UniXcoder
 This repo will provide the code for improving the code clone detection in [UniXcoder: Unified Cross-Modal Pre-training for Code Representation](https://arxiv.org/pdf/2203.03850.pdf). UniXcoder is a unified cross-modal pre-trained model for programming languages to support both code-related understanding and generation tasks. 
