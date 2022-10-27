@@ -36,23 +36,23 @@ class Preprocess:
 
   # Create the one to one mapping from the UniXcoder paper
   def one_to_one(self, root_node: Tree, code: str, FS: List[Node]):
-      sequence = ""
+      sequence = []
       name = root_node.type
 
-      # Check here for node?
+      # If node in AST is useful, add to final tree
       if root_node in FS or root_node.type in code:
           # Is Leaf
           if root_node.child_count == 0:
-              sequence += root_node.text.decode("utf8") + " "
+              sequence.append(name)
           else:
-              sequence += name + "::left "
+              sequence.append(name+ "::left")
               for node in root_node.children:
-                  sequence += self.one_to_one(node, code, FS)
-              sequence += name + "::right "
+                  sequence.extend(self.one_to_one(node, code, FS))
+              sequence.append(name+ "::right")
           return sequence
       else:
           for node in root_node.children:
-              sequence += self.one_to_one(node, code, FS) + " "
+              sequence.extend(self.one_to_one(node, code, FS))
       return sequence
 
   def preprocess(self, code: str, mode: Mode = Mode.SIMPLIFIED):
