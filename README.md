@@ -212,10 +212,10 @@ python run.py
 Here is the result that you can obtain with our fine-tuned model and also the original UniXcoder result.
 The interpretation can be found in our report.
 
-| Model                        | mAP    |
-|------------------------------|--------|
-| Original UniXcoder Reference | 0.9052 |
-| UniXcoder + Simplified AST   | 0.5571 |
+| Model                         | mAP    |
+|-------------------------------|--------|
+| Original UniXcoder Reference  | 0.9052 |
+| UniXcoder with Simplified AST | 0.5806 |
 
 ## Contact
 Feel free to contact Group 1 via MatterMost if there is any question! Might be able to help you in terms of set up :)
