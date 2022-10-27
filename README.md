@@ -191,7 +191,7 @@ If you are using CPU, then replace line 350 in run.py of UniXcoder with the foll
 model_to_load.load_state_dict(torch.load(output_dir), map_location=torch.device('cpu'))  
 ```
 
-Run the command below.
+Run the command below in POJ-104.
 
 ```
 python run.py 
