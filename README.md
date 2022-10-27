@@ -170,11 +170,27 @@ python run.py
 
 # Fine-tuned model & Inference
 
-Our fine-tuned model can be found in [UniXcoder-simplified-AST](link).
+Our fine-tuned model can be found in [UniXcoder-simplified-AST](https://drive.google.com/file/d/1pQWHLmJaBs9u3K0Q6Av_lYev_CGvTOk7/view).
+
+You can also simply download the fine-tuned model via the following command.
+
+Please follow the command inside POJ-104.
+```
+mkdir saved_models\checkpoint-best-map
+cd saved_models\checkpoint-best-map
+pip install gdown
+gdown https://drive.google.com/u/0/uc?id=1pQWHLmJaBs9u3K0Q6Av_lYev_CGvTOk7
+```
+
+Make sure to place the downloaded fine-tuned model under UniXcoder/downstream-tasks/clone-detection/POJ-104/saved_models/checkpoint-best-map.
 
 ## How can we use the model for inference?
 
-Place the downloaded fine-tuned model under UniXcoder/downstream-tasks/clone-detection/POJ-104/saved_models/checkpoint-best-map.
+If you are using CPU, then replace line 350 in run.py of UniXcoder with the following command.
+```
+model_to_load.load_state_dict(torch.load(output_dir), map_location=torch.device('cpu'))  
+```
+
 Run the command below.
 
 ```
