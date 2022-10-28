@@ -3,12 +3,15 @@ This project attempts to improve the code clone detection by incorporating AST i
 
 This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-Trained Model for Programming and Natural Languages](https://arxiv.org/pdf/2002.08155.pdf). CodeBERT is a pre-trained model for programming language, which is a multi-programming-lingual model pre-trained on NL-PL pairs in 6 programming languages (Python, Java, JavaScript, PHP, Ruby, Go).
 
-# Set up 
+# Local Set up 
 
-First, you should clone this repository.
+First, you should clone this repository. 
 Before installing libraries, we highly recommend to set up the requirements in a virtual environment of your own choice.
 
 In case you use mac or linux, the path we set using double backslash might not work. Please adjust to your own OS.
+
+In 'docker' branch, the paths are already adjusted for linux and macos. 
+
 Paths are in 
 1. UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset/preprocess.py
 2. UniXcoder/downstream-tasks/clone-detection/POJ-104/preprocess.py
@@ -23,6 +26,7 @@ Beside these files, if you notice any path error, please adjust those as well.
 - pip install transformers
 - pip install -U scikit-learn
 - pip install tree-sitter (If you do not have a C-compiler, you will get an error. Please follow the solution mentioned in the error. )
+- pip install gdown
 
 You can choose to simply install with requirements.txt.
 ```
@@ -48,6 +52,38 @@ As this library is not build only with python, C-compiler is necessary.
 This can be different per os version, and the choice is up to you.
 For Windows user, installing visual studio can be a solution by looking at this website [microsoft guide](https://devblogs.microsoft.com/cppblog/getting-started-with-visual-studio-for-c-and-cpp-development/#Setup).
 Or the error while installing tree-sitter can perfectly guide you to resolve the issue.
+
+## UniXcoder Dataset
+
+Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
+
+1.Download dataset from website or run the following command:
+```
+cd dataset
+pip install gdown
+gdown https://drive.google.com/uc?id=0B2i-vWnOu7MxVlJwQXN6eVNONUU
+tar -xvf programs.tar.gz
+cd ..
+```
+In case you get a Permission related error, please manually download the google drive via the link.
+
+2.Preprocess data
+
+```
+cd dataset
+python preprocess.py
+cd ..
+```
+
+## GraphCodeBERT Dataset
+
+For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
+
+# Option: Docker
+In Docker branch, you can run evaluation with Docker.
+
+Check out the 'Optional: Docker Setup' of the README in Docker Branch.
+
 
 # How to Fine-Tune?
 
@@ -91,27 +127,6 @@ Please check the README in UniXcoder before you start running them.
 
 We have fine-tuned UniXcoder using the following pretrained model [link](https://huggingface.co/microsoft/unixcoder-base). 
 
-### Dataset
-
-Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
-
-1.Download dataset from website or run the following command:
-```
-cd dataset
-pip install gdown
-gdown https://drive.google.com/uc?id=0B2i-vWnOu7MxVlJwQXN6eVNONUU
-tar -xvf programs.tar.gz
-cd ..
-```
-
-2.Preprocess data
-
-```
-cd dataset
-python preprocess.py
-cd ..
-```
-
 ### How to train Clone Detection with UniXcoder?
 
 1. Go to POJ-104 under clone-detection of UniXcoder.
@@ -139,10 +154,6 @@ For downstream tasks like code search, clone detection, code refinement and code
 Please check the README in GraphCodeBERT before you start running them.
 
 We have fine-tuned GraphCodeBERT using the following pretrained model [link](https://huggingface.co/microsoft/graphcodebert-base).
-
-### Dataset
-
-For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
 
 ### How to train Clone Detection with GraphCodeBERT?
 
@@ -223,4 +234,5 @@ The interpretation can be found in our report.
 
 ## Contact
 Feel free to contact Group 1 via MatterMost if there is any question! Might be able to help you in terms of set up :)
+
 (Daan Hofman, Pascal Benschop, Jeongwoo Park, Leon Kempen, Aron Bevelander)
