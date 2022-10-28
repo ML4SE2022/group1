@@ -49,23 +49,30 @@ This can be different per os version, and the choice is up to you.
 For Windows user, installing visual studio can be a solution by looking at this website [microsoft guide](https://devblogs.microsoft.com/cppblog/getting-started-with-visual-studio-for-c-and-cpp-development/#Setup).
 Or the error while installing tree-sitter can perfectly guide you to resolve the issue.
 
-# Optional: Docker Setup
-There is an option to use our dockerfile for the specific evaluation in Results.
+## UniXcoder Dataset
+
+Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
+
+1.Download dataset from website or run the following command:
+```
+cd dataset
+pip install gdown
+gdown https://drive.google.com/uc?id=0B2i-vWnOu7MxVlJwQXN6eVNONUU
+tar -xvf programs.tar.gz
+cd ..
+```
+
+2.Preprocess data
 
 ```
-docker build -t <IMAGE-NAME> .
+cd dataset
+python preprocess.py
+cd ..
 ```
 
-```
-docker run <IMAGE-NAME>
-```
-In case you want to run with GPU, please check out docker [website](https://docs.docker.com/config/containers/resource_constraints/#gpu). 
+## GraphCodeBERT Dataset
 
-You might need to install additional drivers, etc.
-
-Please refer to docker [documentation](https://docs.docker.com/engine/reference/commandline/run/) for an additional argument, e.g. using gpu. 
-
-Current Dockerfile is set for evaluation, so in case, if you want training, please adjust arguments in CMD.
+For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
 
 # How to Fine-Tune?
 
@@ -109,26 +116,7 @@ Please check the README in UniXcoder before you start running them.
 
 We have fine-tuned UniXcoder using the following pretrained model [link](https://huggingface.co/microsoft/unixcoder-base). 
 
-### Dataset
 
-Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-POJ-104)
-
-1.Download dataset from website or run the following command:
-```
-cd dataset
-pip install gdown
-gdown https://drive.google.com/uc?id=0B2i-vWnOu7MxVlJwQXN6eVNONUU
-tar -xvf programs.tar.gz
-cd ..
-```
-
-2.Preprocess data
-
-```
-cd dataset
-python preprocess.py
-cd ..
-```
 
 ### How to train Clone Detection with UniXcoder?
 
@@ -158,9 +146,6 @@ Please check the README in GraphCodeBERT before you start running them.
 
 We have fine-tuned GraphCodeBERT using the following pretrained model [link](https://huggingface.co/microsoft/graphcodebert-base).
 
-### Dataset
-
-For GraphCodeBERT, the dataset is already placed in the GraphCodeBERT/clonedetection/dataset, so no additional download or preprocessing is required.
 
 ### How to train Clone Detection with GraphCodeBERT?
 
@@ -228,6 +213,28 @@ python run.py
 --max_grad_norm 1.0 
 --seed 123456
 ```
+
+## Optional: Docker Setup
+
+There is an option to use our dockerfile for the evaluation.
+
+```
+docker build -t <IMAGE-NAME> .
+```
+
+```
+docker run <IMAGE-NAME>
+```
+In case you want to run with GPU, please check out docker [website](https://docs.docker.com/config/containers/resource_constraints/#gpu). 
+
+You might need to install additional drivers, etc.
+
+Please refer to docker [documentation](https://docs.docker.com/engine/reference/commandline/run/) for an additional argument, e.g. using gpu. 
+
+Current Dockerfile is set for evaluation, so in case, if you want training, please adjust arguments in CMD.
+
+There can be paths that are written in Windows format. Please read the first paragraph of Local Setup.
+
 
 ## Results
 
