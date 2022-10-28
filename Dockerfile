@@ -1,12 +1,4 @@
-FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
-
-# install python 3.10
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt install -y python3.10 && \
-    apt-get install -y python3-pip
+FROM python:3.10
 
 # Install the latest gcc (should be version 10)
 RUN apt-get install -y gcc

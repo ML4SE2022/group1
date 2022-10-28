@@ -15,10 +15,10 @@ def files(path):
 cont=0
 with open("train.jsonl",'w') as f:
     for i in tqdm(range(1,65),total=64):
-        items=files("ProgramData\\{}".format(i))
+        items=files("ProgramData/{}".format(i))
         for item in items:
             js={}
-            js['label']=item.split('\\')[1]
+            js['label']=item.split('/')[1]
             js['index']=str(cont)
             js['code']=open(item,encoding='latin-1').read()
             f.write(json.dumps(js)+'\n')
@@ -26,10 +26,10 @@ with open("train.jsonl",'w') as f:
 
 with open("valid.jsonl",'w') as f:
     for i in tqdm(range(65,81),total=16):
-        items=files("ProgramData\\{}".format(i))
+        items=files("ProgramData/{}".format(i))
         for item in items:
             js={}
-            js['label']=item.split('\\')[1]
+            js['label']=item.split('/')[1]
             js['index']=str(cont)
             js['code']=open(item,encoding='latin-1').read()
             f.write(json.dumps(js)+'\n')
@@ -37,12 +37,12 @@ with open("valid.jsonl",'w') as f:
             
 with open("test.jsonl",'w') as f:
     for i in tqdm(range(81,195),total=24):
-        items=files("ProgramData\\{}".format(i))
+        items=files("ProgramData/{}".format(i))
         for item in items:
             js={}
             # print("item.split('/')[1]", item.split('/')[1])
             # print("item.split('\\')[1]", item.split('\\')[1])
-            js['label']=item.split('\\')[1]
+            js['label']=item.split('/')[1]
             js['index']=str(cont)
             js['code']=open(item,encoding='latin-1').read()
             f.write(json.dumps(js)+'\n')
