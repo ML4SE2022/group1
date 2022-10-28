@@ -5,8 +5,7 @@ This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-
 
 # Set up 
 
-First, you should clone this repository together with submodules for tree-sitters.
-Our submodules exist in TreeSitter/tree-sitter-cpp and GraphCodeBERT/clonedetection/parserX/tree-sitter-java.
+First, you should clone this repository.
 Before installing libraries, we highly recommend to set up the requirements in a virtual environment of your own choice.
 
 In case you use mac or linux, the path we set using double backslash might not work. Please adjust to your own OS.
@@ -39,10 +38,10 @@ It is not mandatory to have GPU to run our code. Using Cuda is your choice.
 
 ## Tree-Sitter
 In order to get the full AST, Tree-Sitter library is used.
-We have already cloned treesitter repositories and added to our folder, so you do not need to install manually.
+Please run both build.sh in TreeSitter/ and GraphCodeBERT/clonedetection/parserX/. These will clone the tree-sitter repositories.
 
 However, if it does not work for you somehow, then you can manually download the repository and change the path like the following:
-First, clone the repository from [Tree-Sitter-C++](https://github.com/tree-sitter/tree-sitter-cpp) and Parser_X(GraphCodeBERT/clonedetection/parserX/build.sh).
+First, clone the repository from [tree-sitter-cpp](https://github.com/tree-sitter/tree-sitter-cpp) and Parser_X(GraphCodeBERT/clonedetection/parserX/build.sh)/ [tree-sitter-java](https://github.com/tree-sitter/tree-sitter-java).
 You can set your own path inside Language.build_library() in preprocess() function in model_name/downstream-tasks/clone-detection/POJ-104/preprocess.py.
 
 As this library is not build only with python, C-compiler is necessary. 
