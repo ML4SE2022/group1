@@ -61,7 +61,7 @@ Download and Preprocess [Instruction Guide](https://github.com/microsoft/CodeXGL
 ```
 cd dataset
 pip install gdown
-gdown https://drive.google.com/uc?id=0B2i-vWnOu7MxVlJwQXN6eVNONUU
+gdown https://drive.google.com/u/0/uc?id=19cH5Tkk38OJmEqAObr3pLmUj76oLqSoW
 tar -xvf programs.tar.gz
 cd ..
 ```
@@ -194,7 +194,7 @@ Please follow the command inside POJ-104.
 mkdir saved_models\checkpoint-best-map
 cd saved_models\checkpoint-best-map
 pip install gdown
-gdown https://drive.google.com/u/0/uc?id=1pQWHLmJaBs9u3K0Q6Av_lYev_CGvTOk7
+gdown https://drive.google.com/u/0/uc?id=1vs7M3gYLcWSnVvfIxI6i1eleHXS3Sd9-
 ```
 
 Make sure to place the downloaded fine-tuned model under UniXcoder/downstream-tasks/clone-detection/POJ-104/saved_models/checkpoint-best-map.
