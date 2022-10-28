@@ -65,6 +65,7 @@ You might need to install additional drivers, etc.
 
 Please refer to docker [documentation](https://docs.docker.com/engine/reference/commandline/run/) for an additional argument, e.g. using gpu. 
 
+Current Dockerfile is set for evaluation, so in case, if you want training, please adjust arguments in CMD.
 
 # How to Fine-Tune?
 
