@@ -54,7 +54,9 @@ Or the error while installing tree-sitter can perfectly guide you to resolve the
 ## How to choose mode: Simplified AST, Full AST, code or both?
 
 convert_examples_to_features() in run.py should be adjusted to select certain mode.
+
 Update the argument of extract_dataflow() for GraphCodeBERT.
+
 Update the argument of tokenizer.tokenize() for UniXcoder.
 
 1. Running with Simplified AST
@@ -169,11 +171,14 @@ python run.py
 
 # Fine-tuned model & Inference
 
-Our fine-tuned model can be found in [UniXcoder-simplified-AST](https://drive.google.com/file/d/1pQWHLmJaBs9u3K0Q6Av_lYev_CGvTOk7/view).
+Our fine-tuned model can be found in [UniXcoder-simplified-AST](https://drive.google.com/file/d/1pQWHLmJaBs9u3K0Q6Av_lYev_CGvTOk7/view). 
+
+This model is the fine-tuned UniXcoder with only simplified AST, meaning no code, no variable name.
 
 You can also simply download the fine-tuned model via the following command.
 
 Please follow the command inside POJ-104.
+
 ```
 mkdir saved_models\checkpoint-best-map
 cd saved_models\checkpoint-best-map

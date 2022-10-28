@@ -63,7 +63,7 @@ class InputFeatures(object):
 def convert_examples_to_features(js,tokenizer,args):
     """convert examples to token ids"""
     code = ' '.join(js['code'].split())
-    code_tokens = tokenizer.tokenize(Preprocess().preprocess(code, Mode.SIMPLIFIED))[:args.block_size-4]
+    code_tokens = Preprocess().preprocess(code, Mode.SIMPLIFIED)[:args.block_size-4]
     source_tokens = [tokenizer.cls_token,"<encoder_only>",tokenizer.sep_token] + code_tokens + [tokenizer.sep_token]
     source_ids = tokenizer.convert_tokens_to_ids(source_tokens)
     padding_length = args.block_size - len(source_ids)
@@ -316,7 +316,6 @@ def main():
                     datefmt='%m/%d/%Y %H:%M:%S',level=logging.INFO )
     #set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(torch.cuda.is_available())
     args.n_gpu = torch.cuda.device_count()
     args.device = device
     logger.info("device: %s, n_gpu: %s",device, args.n_gpu)
