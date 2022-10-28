@@ -2,3 +2,4 @@ torch
 transformers
 tree_sitter
 scikit-learn
+gdown

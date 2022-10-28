@@ -343,10 +343,13 @@ def main():
     # Evaluation
     results = {}
     if args.do_eval:
-        checkpoint_prefix = 'checkpoint-best-map\\model.bin'
+        # For windows
+        # checkpoint_prefix = 'checkpoint-best-map\\model.bin'
+        checkpoint_prefix = 'checkpoint-best-map/model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model_to_load = model.module if hasattr(model, 'module') else model  
-        model_to_load.load_state_dict(torch.load(output_dir))      
+        model_to_load.load_state_dict(torch.load(output_dir))
+        # model_to_load.load_state_dict(torch.load(output_dir, map_location=torch.device('cpu')))
         result = evaluate(args, model, tokenizer, args.eval_data_file)
         logger.info("***** Eval results *****")
         for key in sorted(result.keys()):

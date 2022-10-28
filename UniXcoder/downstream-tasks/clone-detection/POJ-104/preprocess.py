@@ -68,10 +68,18 @@ class Preprocess:
     Language.build_library(
       'build/my-languages.so',
       [
-        '..\\..\\..\\..\\TreeSitter\\tree-sitter-cpp',
+        '../../../../TreeSitter/tree-sitter-cpp',
 
       ]
     )
+    # Windows
+    # Language.build_library(
+    #   'build/my-languages.so',
+    #   [
+    #     '..\\..\\..\\..\\TreeSitter\\tree-sitter-cpp',
+    #
+    #   ]
+    # )
     # Add the cpp language to the parser
     cpp_lang = Language('build/my-languages.so', 'cpp')
     parser = Parser()

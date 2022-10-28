@@ -3,12 +3,12 @@ This project attempts to improve the code clone detection by incorporating AST i
 
 This repo provides the code for reproducing the experiments in [CodeBERT: A Pre-Trained Model for Programming and Natural Languages](https://arxiv.org/pdf/2002.08155.pdf). CodeBERT is a pre-trained model for programming language, which is a multi-programming-lingual model pre-trained on NL-PL pairs in 6 programming languages (Python, Java, JavaScript, PHP, Ruby, Go).
 
-# Set up 
+# Local Set up 
 
 First, you should clone this repository.
 Before installing libraries, we highly recommend to set up the requirements in a virtual environment of your own choice.
 
-In case you use mac or linux, the path we set using double backslash might not work. Please adjust to your own OS.
+In case you use mac or linux, the path we set using double backslash might not work, and for windows, double backslash is required. Please adjust to your own OS.
 Paths are in 
 1. UniXcoder/downstream-tasks/clone-detection/POJ-104/dataset/preprocess.py
 2. UniXcoder/downstream-tasks/clone-detection/POJ-104/preprocess.py
@@ -16,7 +16,7 @@ Paths are in
 4. GraphCodeBERT/clonedetection/run.py
 5. GraphCodeBERT/clonedetection/preprocess.py
 
-Beside these files, if you notice any path error, please adjust those as well.
+Beside these files, if you notice any path error, please adjust those as well. 
 
 ## Dependency
 - pip install torch
@@ -48,6 +48,23 @@ As this library is not build only with python, C-compiler is necessary.
 This can be different per os version, and the choice is up to you.
 For Windows user, installing visual studio can be a solution by looking at this website [microsoft guide](https://devblogs.microsoft.com/cppblog/getting-started-with-visual-studio-for-c-and-cpp-development/#Setup).
 Or the error while installing tree-sitter can perfectly guide you to resolve the issue.
+
+# Optional: Docker Setup
+There is an option to use our dockerfile for the specific evaluation in Results.
+
+```
+docker build -t <IMAGE-NAME> .
+```
+
+```
+docker run <IMAGE-NAME>
+```
+In case you want to run with GPU, please check out docker [website](https://docs.docker.com/config/containers/resource_constraints/#gpu). 
+
+You might need to install additional drivers, etc.
+
+Please refer to docker [documentation](https://docs.docker.com/engine/reference/commandline/run/) for an additional argument, e.g. using gpu. 
+
 
 # How to Fine-Tune?
 
